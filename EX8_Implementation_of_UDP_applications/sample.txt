@@ -1,0 +1,17 @@
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Function              | Explanation                                                                                                                                                      |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `datagramReceived`   | Server: Called when receiving a UDP datagram. Responds with "READY TO RECEIVE" upon "REQUEST TO SEND". Writes received data to 'received.txt'.                 |
+| `startProtocol`      | Client: Connects to server and initiates file transfer.                                                                                                          |
+| `sendDatagram`       | Client: Initiates file transfer. Sends "REQUEST TO SEND" and file content.                                                                                        |
+| `datagramReceived`   | Client: Called when receiving a UDP datagram. Initiates sending file content and prints round trip time.                                                        |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Function              | Explanation                                                                                                                                                      |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `datagramReceived`   | Server: Called when receiving a UDP datagram. Responds with "READY TO RECEIVE" upon "REQUEST TO SEND". Writes received data to 'received.txt'.                 |
+| `startProtocol`      | Client: Connects to server and initiates file transfer.                                                                                                          |
+| `sendDatagram`       | Client: Initiates file transfer. Sends "REQUEST TO SEND" and file content.                                                                                        |
+| `datagramReceived`   | Client: Called when receiving a UDP datagram. Initiates sending file content and prints round trip time.                                                        |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|

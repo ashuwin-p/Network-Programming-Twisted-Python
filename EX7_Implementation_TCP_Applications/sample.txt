@@ -1,0 +1,14 @@
+                                                            FTP_server.py
+============================================================================================================================
+FTP_Server: 
+    This class defines the protocol for the server. It inherits from protocol.Protocol provided by Twisted. 
+    When a client connects, it prints "Client Connected" to the console.
+
+dataReceived: 
+    This method handles the received data. If the data received is "REQUEST TO SEND", 
+    it acknowledges with "READY TO RECEIVE" and initiates the file transfer process. 
+    During the file transfer process, it writes the received data to a file named "received.txt". 
+    Once the file is received completely, it prints "File Received" along with the round-trip time.
+
+FTP_Server_Factory: 
+    This class implements the server factory responsible for creating instances of the server protocol (FTP_Server).
