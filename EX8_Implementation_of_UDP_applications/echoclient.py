@@ -1,28 +1,31 @@
 from twisted.internet import protocol, reactor
-import time
+
 
 class EchoClient(protocol.DatagramProtocol):
-
     def startProtocol(self):
-        self.transport.connect('127.0.0.1', 8000)
+        self.transport.connect(SERVER_HOST, SERVER_PORT)
+        print("Connected to Server")
         self.sendDatagram()
 
     def sendDatagram(self):
-        message = input("\nEnter Message (or '/exit' to exit): ")
-        if message.lower() == '/exit':
+        print(">quit to quit the application")
+        datagram = input("Enter Data - ")
+        if datagram == ">quit":
             reactor.callLater(0, reactor.stop)
             return
-
-        self.start_time = time.time()
-        self.transport.write(message.encode())
+        self.transport.write(datagram.encode())
 
     def datagramReceived(self, datagram, host):
-        self.end_time = time.time()
-        rtt = self.end_time - self.start_time
-        print(f"\nAcknowledgement from Server {host} : ")
-        print(datagram.decode(), f'<RTT : {rtt}s>', '\n')
+        print("Server : ", datagram.decode())
         self.sendDatagram()
 
-if __name__ == '__main__':
+
+def run_client():
     reactor.listenUDP(0, EchoClient())
     reactor.run()
+
+
+if __name__ == "__main__":
+    SERVER_HOST = "127.0.0.1"
+    SERVER_PORT = 8000
+    run_client()

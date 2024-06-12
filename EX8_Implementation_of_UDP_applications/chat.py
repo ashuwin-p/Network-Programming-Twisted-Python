@@ -9,12 +9,12 @@ class ChatServer(DatagramProtocol):
         self.transport.write(b"Please enter your username:\n")
 
     def datagramReceived(self, data, addr):
-        message = data.decode('utf-8').strip()
+        message = data.decode()
         if addr not in self.users:
             # If the user is not registered, use the received message as their username
-            username = message.split()[0]
+            username = message
             self.users[addr] = username
-            self.transport.write(f"Welcome, {username}!\n".encode('utf-8'))
+            self.transport.write(f"Welcome, {username}!\n".encode())
             self.broadcastMessage(f"{username} has joined the chat.\n", addr)
         else:
             # If the user is already registered, broadcast the message to all other users
@@ -24,7 +24,7 @@ class ChatServer(DatagramProtocol):
     def broadcastMessage(self, message, sender_addr):
         for user_addr, username in self.users.items():
             if user_addr != sender_addr:
-                self.transport.write(message.encode('utf-8'), user_addr)
+                self.transport.write(message.encode(), user_addr)
 
 if __name__ == "__main__":
     reactor.listenUDP(8000, ChatServer())

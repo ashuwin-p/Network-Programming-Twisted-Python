@@ -19,7 +19,6 @@ class ResponsePrinter(protocol.Protocol):
 
 
 def got_response(response):
-    print("Response code:", response.code)
     response.deliverBody(ResponsePrinter())
 
 

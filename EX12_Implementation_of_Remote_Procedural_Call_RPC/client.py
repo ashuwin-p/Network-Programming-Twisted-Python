@@ -32,35 +32,30 @@ def connect():
     d = factory.getRootObject()
 
     # Chain callbacks to call remote methods in sequence
-    d.addCallback(
-        lambda obj: obj.callRemote(
-            "add", int(input("Enter number1: ")), int(input("Enter number2: "))
-        )
-    )
+    n1 = int(input("Enter number1: "))
+    n2 = int(input("Enter number2: "))
+    d.addCallback(lambda obj: obj.callRemote("add", n1, n2))
     d.addCallback(add_handle_result)
 
     d.addCallback(lambda _: factory.getRootObject())
-    d.addCallback(
-        lambda obj: obj.callRemote(
-            "subtract", int(input("Enter number1: ")), int(input("Enter number2: "))
-        )
-    )
+
+    n1 = int(input("Enter number1: "))
+    n2 = int(input("Enter number2: "))
+    d.addCallback(lambda obj: obj.callRemote("subtract", n1, n2))
     d.addCallback(sub_handle_result)
 
     d.addCallback(lambda _: factory.getRootObject())
-    d.addCallback(
-        lambda obj: obj.callRemote(
-            "multiply", int(input("Enter number1: ")), int(input("Enter number2: "))
-        )
-    )
+
+    n1 = int(input("Enter number1: "))
+    n2 = int(input("Enter number2: "))
+    d.addCallback(lambda obj: obj.callRemote("multiply", n1, n2))
     d.addCallback(mul_handle_result)
 
     d.addCallback(lambda _: factory.getRootObject())
-    d.addCallback(
-        lambda obj: obj.callRemote(
-            "divide", int(input("Enter number1: ")), int(input("Enter number2: "))
-        )
-    )
+
+    n1 = int(input("Enter number1: "))
+    n2 = int(input("Enter number2: "))
+    d.addCallback(lambda obj: obj.callRemote("divide", n1, n2))
     d.addCallback(div_handle_result)
 
     # Handle errors

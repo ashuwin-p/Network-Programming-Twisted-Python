@@ -1,15 +1,20 @@
 from twisted.internet import protocol, reactor
 
+
 class EchoServer(protocol.DatagramProtocol):
-
     def datagramReceived(self, datagram, addr):
-        msg = datagram.decode()
-        print(f"Message from Client {addr}: {msg}")
-        ack_msg = f"ACK: [{msg}]"
-        print("Sending Acknowledgement\n")
-        self.transport.write(ack_msg.encode(), addr)
+        datagram = datagram.decode()
+        print("Client : ", datagram)
+        ack = "[ACK] :" + datagram
+        self.transport.write(ack.encode(), addr)
 
-if __name__ == '__main__':
-    reactor.listenUDP(8000, EchoServer())
-    print("Server started listening on port 8000")
+
+def run_server():
+    reactor.listenUDP(SERVER_PORT, EchoServer())
+    print(f"Server listening on port {SERVER_PORT}")
     reactor.run()
+
+
+if __name__ == "__main__":
+    SERVER_PORT = 8000
+    run_server()

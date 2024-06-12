@@ -5,10 +5,10 @@ class SubnetClientProtocol(protocol.Protocol):
     def connectionMade(self):
         ip = input("Enter IP address: ")
         subnet_mask = input("Enter subnet mask: ")
-        self.transport.write(f"{ip},{subnet_mask}".encode('utf-8'))
+        self.transport.write(f"{ip},{subnet_mask}".encode())
 
     def dataReceived(self, data):
-        response = json.loads(data.decode('utf-8'))
+        response = json.loads(data.decode())
         if 'error' in response:
             print(f"Error: {response['error']}")
         else:

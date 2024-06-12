@@ -22,13 +22,11 @@ class ChatProtocol(LineReceiver):
 
             self.broadcastMessage(msg.encode())
 
-
     def lineReceived(self, line):
         if self.state == "REGISTER":
             self.handle_REGISTER(line)
         else:
             self.handle_CHAT(line)
-
 
     def handle_REGISTER(self, name):
         name = name.decode()
@@ -47,16 +45,14 @@ class ChatProtocol(LineReceiver):
         self.factory.users[name] = self
         self.state = "CHAT"
 
-
     def handle_CHAT(self, msg):
         if msg.decode() == "/leave":
             self.transport.loseConnection()
             return
-        
+
         msg = f"<{self.name}>: {msg.decode()}"
         print("Messaging : ", msg)
         self.broadcastMessage(msg.encode())
-
 
     def broadcastMessage(self, msg):
         for name, protocol in self.factory.users.items():
