@@ -1,61 +1,27 @@
-from twisted.internet import reactor, protocol
-import struct
+# server.py
+from twisted.internet import protocol, reactor
+import pickle
+from packets import Request_Packet, Reply_Packet
+
+global arp_table
 
 
 class ARPServer(protocol.Protocol):
-    def connectionMade(self):
-        print("Client connected")
-
     def dataReceived(self, data):
-        global arp_table
-        rec = eval(data.decode())
-        mac_address = "0:0:0:0:0:0"
-
-        arp_packet_format = "!6s4s6s4s"
-        arp_data = struct.unpack(arp_packet_format, rec.get("req_format"))
-
-        (
-            Source_Hardware_Address,
-            Source_Protocol_Address,
-            Target_Hardware_Address,
-            Target_Protocol_Address,
-        ) = arp_data
-
-        print("Received ARP packet:")
-        print("Source Hardware Address:", ":".join("{:02x}".format(byte) for byte in Source_Hardware_Address))
-        print("Source Protocol Address:", ".".join(str(byte) for byte in Source_Protocol_Address))
-        print("Target Hardware Address:", ":".join("{:02x}".format(byte) for byte in Target_Hardware_Address))
-        print("Target Protocol Address:", ".".join(str(byte) for byte in Target_Protocol_Address))
-
-        if rec.get("req") == "ARP_REQUEST":
-            for ip, mac in arp_table.items():
-                if ip == rec.get("ip"):
-                    mac_address = mac
-                    break
-
-            l = [int(i) for i in mac_address.split(":")]  # List contains MAC address
-
-            ip_address = rec.get("ip")
-            response_packet = struct.pack(
-                arp_packet_format,
-                Target_Hardware_Address,
-                Target_Protocol_Address,
-                Source_Hardware_Address,
-                bytes(l),
+        request_packet = pickle.loads(data)
+        print("\n\nARP Request Packet \n\n", request_packet)
+        IP = request_packet.destIP
+        if IP not in arp_table:
+            self.transport.write(b"NOT FOUND")
+        else:
+            MAC = arp_table[IP]
+            reply_packet = Reply_Packet(
+                MAC, IP, request_packet.srcMAC, request_packet.srcIP
             )
-            to_client = {"reply_format": response_packet}
-
-            if mac_address != "0:0:0:0:0:0":
-                arp_reply = f"ARP_REPLY {ip_address} {mac_address}\n"
-                to_client["data"] = arp_reply
-                self.transport.write(str(to_client).encode())
-                print("MAC Address sent")
-            else:
-                self.transport.write(b"hi")
-                print("Invalid IP received")
-
-    def connectionLost(self, reason):
-        print("Client removed")
+            print("\n\nARP Reply Packet \n\n", reply_packet)
+            data = pickle.dumps(reply_packet)
+            print("\n>>>>>>>>>>>> Sending ARP Reply Packet")
+            self.transport.write(data)
 
 
 class ARPServerFactory(protocol.Factory):
@@ -63,7 +29,11 @@ class ARPServerFactory(protocol.Factory):
         return ARPServer()
 
 
-arp_table = {"192.168.1.1": "00:11:22:33:44:55"}
+arp_table = {}
+arp_table["130.23.43.24"] = "A4:6E:F4:59:83:AC"
+arp_table["130.23.43.25"] = "A4:6E:F4:59:83:AB"
+arp_table["130.23.43.26"] = "A4:6E:F4:59:83:DB"
 
-reactor.listenTCP(1234, ARPServerFactory())
-reactor.run()
+if __name__ == "__main__":
+    reactor.listenTCP(8000, ARPServerFactory())
+    reactor.run()

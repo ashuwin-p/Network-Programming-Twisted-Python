@@ -1,10 +1,11 @@
 import socket
 
+
 def main():
     # Create a socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket = socket.socket()
 
-    host = '127.0.0.1'
+    host = "127.0.0.1"
     port = 8000
 
     # Connect to the server
@@ -18,10 +19,9 @@ def main():
     message = input("Enter Message to Server : ")
     client_socket.send(message.encode())
 
-    
-
     # Close the connection
     client_socket.close()
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 from twisted.internet import protocol, reactor
 import json
 
+
 class SubnetClientProtocol(protocol.Protocol):
     def connectionMade(self):
         ip = input("Enter IP address: ")
@@ -9,18 +10,20 @@ class SubnetClientProtocol(protocol.Protocol):
 
     def dataReceived(self, data):
         response = json.loads(data.decode())
-        if 'error' in response:
+        if "error" in response:
             print(f"Error: {response['error']}")
         else:
             print(f"Number of subnets: {response['num_subnets']}")
+            print("Subnets:")
+            for subnet in response["subnets"]:
+                print(subnet)
             print(f"Number of hosts per subnet: {response['num_hosts']}")
             print("Host addresses:")
-            for host in response['hosts']:
+            for host in response["hosts"]:
                 print(host)
-            print("Subnets:")
-            for subnet in response['subnets']:
-                print(subnet)
+
         self.transport.loseConnection()
+
 
 class SubnetClientFactory(protocol.ClientFactory):
     def buildProtocol(self, addr):
@@ -33,9 +36,11 @@ class SubnetClientFactory(protocol.ClientFactory):
     def clientConnectionLost(self, connector, reason):
         reactor.stop()
 
+
 def main():
     reactor.connectTCP("localhost", 8000, SubnetClientFactory())
     reactor.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
